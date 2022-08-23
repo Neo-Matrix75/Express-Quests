@@ -9,7 +9,7 @@ const port = process.env.APP_PORT ?? 5000;
 const welcome = (req, res) => {
   res.send("Welcome to my favourite movie list");
 };
-
+app.use(express.json()); // add this line
 app.get("/", welcome);
 
 const movieHandlers = require("./movieHandlers");
@@ -22,6 +22,8 @@ app.get("/api/movies/:id", movieHandlers.getMovieById);
 app.get("/api/users", usersHandlers.getUsers);
 
 app.get("/api/users/:id", usersHandlers.getUsersById);
+app.post("/api/movies", movieHandlers.postMovie);
+app.post("/api/users", usersHandlers.postUsers);
 
 app.listen(port, (err) => {
   if (err) {
