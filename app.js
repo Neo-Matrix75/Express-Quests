@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 
 const app = express();
@@ -12,8 +14,14 @@ app.get("/", welcome);
 
 const movieHandlers = require("./movieHandlers");
 
+const usersHandlers = require("./userHandlers");
+
 app.get("/api/movies", movieHandlers.getMovies);
 app.get("/api/movies/:id", movieHandlers.getMovieById);
+
+app.get("/api/users", usersHandlers.getUsers);
+
+app.get("/api/users/:id", usersHandlers.getUsersById);
 
 app.listen(port, (err) => {
   if (err) {
