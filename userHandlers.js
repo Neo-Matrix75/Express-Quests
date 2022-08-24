@@ -1,13 +1,46 @@
 const database = require("./database");
 
 
+// const getUsers = (req, res) => {
+//     console.log(req)
+//     database
+//         .query("select * from users")
+//         .then(([users]) => {
+//             res.json(users);
+//         })
+//         .catch((err) => {
+//             console.error(err);
+//             res.status(500).send("Error retrieving data from database");
+//         });
+// };
 const getUsers = (req, res) => {
-    console.log(req)
+    const data = "select * from users";
+    const where = [];
+
+    if (req.query.language != null) {
+        where.push({
+            column: "language",
+            value: req.query.language,
+            operator: "=",
+        });
+    }
+    if (req.query.city != null) {
+        where.push({
+            column: "city",
+            value: req.query.city,
+            operator: "=",
+        });
+    }
     database
-        .query("select * from users")
-        .then(([users]) => {
-            res.json(users);
-        })
+        .query(
+            where.reduce(
+                (sql, { column, operator }, index) =>
+                    `${sql} ${index === 0 ? "where" : "and"} ${column} ${operator} ?`,
+                data
+            ),
+            where.map(({ value }) => value)
+        )
+        .then(([users]) => res.status(200).json(users))
         .catch((err) => {
             console.error(err);
             res.status(500).send("Error retrieving data from database");
